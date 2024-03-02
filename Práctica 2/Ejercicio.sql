@@ -39,7 +39,7 @@ BEGIN
             WHEN 'I' THEN
                 BEGIN
                     INSERT INTO CUENTAS (IDCuenta, Valor) VALUES (Accion.IdCuenta, Accion.NuevoValor);
-                    estado_accion := 'Insertado con exito';
+                    estado_accion := 'Insertado con exito.';
                     EXCEPTION
                         WHEN DUP_VAL_ON_INDEX THEN
                             UPDATE CUENTAS SET Valor = Accion.NuevoValor WHERE IDCuenta = Accion.IdCuenta;
@@ -61,11 +61,11 @@ BEGIN
                     IF SQL%ROWCOUNT = 0 THEN
                         estado_accion := 'Cuenta no existente. No se borro ninguna fila.';
                     ELSE
-                        estado_accion := 'Borrado con exito';
+                        estado_accion := 'Borrado con exito.';
                     END IF;
                 END;
             ELSE
-                estado_accion := 'Operacion desconocida';
+                estado_accion := 'Operacion desconocida.';
         END CASE;
         UPDATE ACCIONES SET Estado = estado_accion, FechaMod = SYSDATE WHERE CURRENT OF Acciones_Cursor;
     END LOOP;
