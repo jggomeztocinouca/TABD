@@ -1,0 +1,36 @@
+Bloque 1: Código
+SET SERVEROUTPUT ON
+DECLARE
+	v_num NUMBER := NULL;
+BEGIN
+ IF v_num > 0 THEN
+ 	DBMS_OUTPUT.PUT_LINE ('v_num is greater than 0');
+ ELSE 
+	DBMS_OUTPUT.PUT_LINE ('v_num is not greater than 0'); 
+ END IF;
+END;
+
+Bloque 1: Resultado
+'v_num is not greater than 0'
+
+Bloque 2: Código
+SET SERVEROUTPUT ON
+DECLARE 
+	v_num NUMBER := NULL;
+BEGIN
+ IF v_num > 0 THEN
+ 	DBMS_OUTPUT.PUT_LINE ('v_num is greater than 0');
+ END IF; 
+ IF NOT (v_num > 0) THEN 
+ 	DBMS_OUTPUT.PUT_LINE ('v_num is not greater than 0');
+ END IF;
+END; 
+
+Bloque 2: Resultado
+''
+
+Explicación:
+La diferencia en los resultados se debe a la forma de estructurar las comparaciones de ambos.
+En PL/SQL, una comparación con un operando NULL devuelve NULL (no TRUE o FALSE como podríamos erróneamente pensar).
+En el primer bloque, donde figura una estructura IF-ELSE, la comparación 'v_num > 0' devuelve NULL, por lo que el ELSE se ejecuta.
+En el segundo bloque, donde figura dos esctruturas IF, ninguna de las dos comparaciones pueden ejecutarse correctamente (se ejecutan pero devuelve NULL), por eso el resultado es vacío.
