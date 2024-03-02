@@ -1,14 +1,14 @@
--- Creación de las tablas CUENTAS y ACCIONES
+-- Creacion de las tablas CUENTAS y ACCIONES
 CREATE TABLE CUENTAS (
-                         IDCuenta NUMBER(4),
+                         IDCuenta NUMBER(4) PRIMARY KEY,
                          Valor NUMBER(11,2)
 );
 
 CREATE TABLE ACCIONES (
-                          IdCuenta NUMBER(4),
+                          IdCuenta NUMBER(4) PRIMARY KEY,
                           TipoOp CHAR(1),
                           NuevoValor NUMBER(11,2),
-                          Estado VARCHAR2(100), -- Modificado para admitir cadenas más larga [No me cabía un mensaje (:]
+                          Estado VARCHAR2(100), -- Modificado para admitir cadenas mas larga [No me cabia un mensaje (:]
                           FechaMod DATE
 );
 
@@ -27,7 +27,7 @@ INSERT INTO ACCIONES (IdCuenta, TipoOp, NuevoValor, Estado, FechaMod) VALUES (1,
 INSERT INTO ACCIONES (IdCuenta, TipoOp, NuevoValor, Estado, FechaMod) VALUES (9, 'b', NULL, NULL, NULL);
 INSERT INTO ACCIONES (IdCuenta, TipoOp, NuevoValor, Estado, FechaMod) VALUES (10, 'h', NULL, NULL, NULL);
 
--- Procedimiento para la gestión de acciones
+-- Procedimiento para la gestion de acciones
 DECLARE
     CURSOR Acciones_Cursor IS
         SELECT * FROM ACCIONES
@@ -39,35 +39,36 @@ BEGIN
             WHEN 'I' THEN
                 BEGIN
                     INSERT INTO CUENTAS (IDCuenta, Valor) VALUES (Accion.IdCuenta, Accion.NuevoValor);
-                    estado_accion := 'Insertado con éxito';
+                    estado_accion := 'Insertado con exito';
                     EXCEPTION
                         WHEN DUP_VAL_ON_INDEX THEN
                             UPDATE CUENTAS SET Valor = Accion.NuevoValor WHERE IDCuenta = Accion.IdCuenta;
-                            estado_accion := 'Cuenta existente. Actualizado con éxito.';
+                            estado_accion := 'Cuenta existente. Actualizado con exito.';
                 END;
             WHEN 'A' THEN
                 BEGIN
                     UPDATE CUENTAS SET Valor = Accion.NuevoValor WHERE IDCuenta = Accion.IdCuenta;
                     IF SQL%ROWCOUNT = 0 THEN
                         INSERT INTO CUENTAS (IDCuenta, Valor) VALUES (Accion.IdCuenta, Accion.NuevoValor);
-                        estado_accion := 'Cuenta no existente. Insertado con éxito.';
+                        estado_accion := 'Cuenta no existente. Insertado con exito.';
                     ELSE
-                        estado_accion := 'Actualizado con éxito.';
+                        estado_accion := 'Actualizado con exito.';
                     END IF;
                 END;
             WHEN 'B' THEN
                 BEGIN
                     DELETE FROM CUENTAS WHERE IDCuenta = Accion.IdCuenta;
                     IF SQL%ROWCOUNT = 0 THEN
-                        estado_accion := 'Cuenta no existente. No se borró ninguna fila.';
+                        estado_accion := 'Cuenta no existente. No se borro ninguna fila.';
                     ELSE
-                        estado_accion := 'Borrado con éxito';
+                        estado_accion := 'Borrado con exito';
                     END IF;
                 END;
             ELSE
-                estado_accion := 'Operación desconocida';
+                estado_accion := 'Operacion desconocida';
         END CASE;
         UPDATE ACCIONES SET Estado = estado_accion, FechaMod = SYSDATE WHERE CURRENT OF Acciones_Cursor;
     END LOOP;
+    COMMIT;
 END;
 /
