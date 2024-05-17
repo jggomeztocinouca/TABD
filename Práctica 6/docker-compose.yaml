@@ -1,0 +1,43 @@
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4jTABD
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_dbms_memory_pagecache_size=2G
+      - NEO4J_dbms_memory_heap_initial__size=2G
+      - NEO4J_dbms_memory_heap_max__size=4G
+
+volumes:
+  neo4j-data:
+    driver: local
+    driver_opts:
+      type: "none"
+      device: "./neo4jdata"
+      o: "bind"
+  neo4j-logs:
+    driver: local
+    driver_opts:
+      type: "none"
+      device: "./neo4jlogs"
+      o: "bind"
+  neo4j-import:
+    driver: local
+    driver_opts:
+      type: "none"
+      device: "./neo4jimport"
+      o: "bind"
+  neo4j-plugins:
+    driver: local
+    driver_opts:
+      type: "none"
+      device: "./neo4jplugins"
+      o: "bind"
